@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-    <title>Dự đoán vietlott - chấp cánh ước mơ</title>
+    <title>Instagram API</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
@@ -29,7 +29,7 @@
     <header>
         <nav class="teal darken-4 white-text">
             <div class="nav-wrapper container">
-                <a href="#" class="brand-logo brand-logo-small">Dự đoán Vietlott </a>
+                <a href="#" class="brand-logo brand-logo-small">Instagram API</a>
                 <ul class="right hide-on-med-and-down">
                     <li><a href="#">About us</a></li>
                 </ul>
@@ -40,7 +40,7 @@
         <div class="section">
             <div class="row center">
                 <div class="col s12">
-                  <ul id="rudr_instafeed"></ul>
+                  <ul id="feed"></ul>
                 </div>
             </div>
             <div class="row center">
@@ -77,7 +77,7 @@
                                 data: {access_token: token, count: num_photos},
                                 success: function(data){
                                     for( x in data.data ){
-                                        $('ul').append('<li><img src="'+data.data[x].images.low_resolution.url+'"></li>');
+                                        $('#feed').append('<li><img src="'+data.data[x].images.low_resolution.url+'"></li>');
                                     }
                                 },
                                 error: function(data){
@@ -101,7 +101,7 @@
                                         success: function(data2){
                                             console.log(data2);
                                             for(x in data2.data){
-                                                $('#rudr_instafeed').append('<li><img src="'+ data2.data[x].images.standard_resolution.url+'"></li>');  
+                                                $('#feed').append('<li><img src="'+ data2.data[x].images.standard_resolution.url+'"></li>');  
                                             }
                                             },
                                         error: function(data2){
@@ -123,7 +123,7 @@
                                 success: function(result){
                                     console.log(result);
                                     for(x in result.data){
-                                        $('ul').append('<li><img src="'+result.data[x].images.standard_resolution.url+'"></li>');  
+                                        $('#feed').append('<li><img src="'+result.data[x].images.standard_resolution.url+'"></li>');  
                                     }
                                     // $.ajax({
                                     //     url: result.pagination.next_url, // we don't need to specify parameters for this request - everything is in URL already
