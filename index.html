@@ -10,16 +10,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular.min.js" type="text/javascript"></script>
     <script src="js/materialize.min.js" type="text/javascript"></script>
     <style type="">
-        #rudr_instafeed{
+        #feed{
             list-style:none  
         }
-        #rudr_instafeed li{
+        #feed li{
         float:left;
         width:200px;
         height:200px;
         margin:10px
         }
-        #rudr_instafeed li img{
+        #feed li img{
         max-width:100%;
         max-height:100%;
         }
@@ -27,7 +27,7 @@
 </head>
 <body ng-controller="myCtrl">
     <header>
-        <nav class="teal darken-4 white-text">
+        <nav class="blue-grey darken-4 white-text">
             <div class="nav-wrapper container">
                 <a href="#" class="brand-logo brand-logo-small">Instagram API</a>
                 <ul class="right hide-on-med-and-down">
@@ -37,14 +37,51 @@
         </nav>
     </header>
     <div class="container">
-        <div class="section">
+        <div class="section ">
             <div class="row center">
                 <div class="col s12">
-                  <ul id="feed"></ul>
+                
                 </div>
-            </div>
-            <div class="row center">
-                <button class="teal darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetPhotoByTag()">Pick tickets</button>
+
+                <div class="col s12">
+                    <ul class="tabs">
+                      <li class="tab col s3 blue-grey "><a class="active white-text" href="#tab1">Get photo by userID</a></li>
+                      <li class="tab col s3 blue-grey  white-text"><a class="white-text" href="#tab2">Get photo by username</a></li>
+                      <li class="tab col s3 blue-grey  white-text"><a class="white-text" href="#tab3">Get photo by tag</a></li>
+                      <li class="tab col s3 blue-grey  white-text"><a class="white-text" href="#tab4">Test 4</a></li>
+                    </ul>
+                  </div>
+                  <div id="tab1" class="col s12"> 
+                        <div class="row center">
+                                <div class="col s12">
+                                        <ul id="feed"></ul> 
+                                </div>
+                            </div>
+                    <div class="row center">
+                            <button class="blue-grey darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetPhotoByUserID()">Get</button>
+                    </div>
+                </div>
+                  <div id="tab2" class="col s12">
+                      <div class="row center">
+                        <div class="col s12">
+                            <ul id="feed1"></ul> 
+                        </div>
+                    </div>
+                    <div class="row center">
+                            <button class="blue-grey darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetPhotoByUserName()">Get</button>
+                    </div>
+                </div>
+                  <div id="tab3" class="col s12">
+                        <div class="row center">
+                                <div class="col s12">
+                                    <ul id="feed2"></ul> 
+                                </div>
+                            </div>
+                            <div class="row center">
+                                    <button class="blue-grey darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetPhotoByTag()">Get</button>
+                            </div>
+                  </div>
+                  <div id="tab4" class="col s12">Test 4</div>
             </div>
         </div>
     </div>
@@ -53,23 +90,19 @@
             Made by <a href="http://materializecss.com">Materialize</a>. Icon pack by <a href="https://icons8.com"> Icons8</a>.
         </div>
     </div>
-
     <script type="text/javascript">     
-        
-        
         var Try = (function(){
             var app = angular.module("instagram-api", [])
             app.controller("myCtrl", function($scope) {
                 var token = '4669573945.ea6645a.d3939e76b27145a2a28ba672a3a9b7ac',
                 username = 'hnguyen.fit',
                 num_photos = 10,
-                tag='wordcamp',
+                tag='appwatchseries3',
                 count = 30; 
                 $scope.fn = {
-                    Init: function(){
-
+                    Init: function() {
                     },
-                    GetPhotoByUserID: function(){
+                    GetPhotoByUserID: function() {
                             $.ajax({
                                 url: 'https://api.instagram.com/v1/users/self/media/recent',
                                 dataType: 'jsonp',
@@ -85,14 +118,15 @@
                                 }
                             });
                     },
-                    GetPhotoByUsername: function(){
-                        $.ajax({ // the first ajax request returns the ID of user rudrastyh
+                    GetPhotoByUserName: function(){
+                        $.ajax({ 
                                 url: 'https://api.instagram.com/v1/users/search',
                                 dataType: 'jsonp',
                                 type: 'GET',
-                                data: {access_token: token, q: username}, // actually it is just the search by username
+                                data: {access_token: token, q: username},                                
                                 success: function(data){
-                                    console.log(data);
+                                    console.log(data.data[0].id);
+                                    //return userID
                                     $.ajax({
                                         url: 'https://api.instagram.com/v1/users/' + data.data[0].id + '/media/recent', // specify the ID of the first found user
                                         dataType: 'jsonp',
@@ -101,7 +135,7 @@
                                         success: function(data2){
                                             console.log(data2);
                                             for(x in data2.data){
-                                                $('#feed').append('<li><img src="'+ data2.data[x].images.standard_resolution.url+'"></li>');  
+                                                $('#feed1').append('<li><img src="'+ data2.data[x].images.standard_resolution.url+'"></li>');  
                                             }
                                             },
                                         error: function(data2){
@@ -119,11 +153,11 @@
                                 url: 'https://api.instagram.com/v1/tags/' + tag + '/media/recent',
                                 dataType: 'jsonp',
                                 type: 'GET',
-                                data: {access_token: token, count: count},
+                                data: {access_token: token},
                                 success: function(result){
                                     console.log(result);
                                     for(x in result.data){
-                                        $('#feed').append('<li><img src="'+result.data[x].images.standard_resolution.url+'"></li>');  
+                                        $('#feed1').append('<li><img src="'+result.data[x].images.standard_resolution.url+'"></li>');  
                                     }
                                     // $.ajax({
                                     //     url: result.pagination.next_url, // we don't need to specify parameters for this request - everything is in URL already
@@ -139,7 +173,6 @@
                                     //         console.log(result2);
                                     //     }
                                     // });
-                            
                                 },
                                 error: function(result){
                                     console.log(result);
