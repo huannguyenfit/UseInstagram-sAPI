@@ -1,0 +1,175 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <title>Dự đoán vietlott - chấp cánh ước mơ</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular.min.js" type="text/javascript"></script>
+    <script src="js/materialize.min.js" type="text/javascript"></script>
+    <style type="">
+        #rudr_instafeed{
+            list-style:none  
+        }
+        #rudr_instafeed li{
+        float:left;
+        width:200px;
+        height:200px;
+        margin:10px
+        }
+        #rudr_instafeed li img{
+        max-width:100%;
+        max-height:100%;
+        }
+    </style>
+</head>
+<body ng-controller="myCtrl">
+    <header>
+        <nav class="teal darken-4 white-text">
+            <div class="nav-wrapper container">
+                <a href="#" class="brand-logo brand-logo-small">Dự đoán Vietlott </a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="#">About us</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="section">
+            <div class="row center">
+                <div class="col s12">
+                  <ul id="rudr_instafeed"></ul>
+                </div>
+            </div>
+            <div class="row center">
+                <button class="teal darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetPhotoByTag()">Pick tickets</button>
+            </div>
+        </div>
+    </div>
+    <div class="section footer-copyright">
+        <div class="container">
+            Made by <a href="http://materializecss.com">Materialize</a>. Icon pack by <a href="https://icons8.com"> Icons8</a>.
+        </div>
+    </div>
+
+    <script type="text/javascript">     
+        
+        
+        var Try = (function(){
+            var app = angular.module("instagram-api", [])
+            app.controller("myCtrl", function($scope) {
+                var token = '4669573945.ea6645a.d3939e76b27145a2a28ba672a3a9b7ac',
+                username = 'hnguyen.fit',
+                num_photos = 10,
+                tag='wordcamp',
+                count = 30; 
+                $scope.fn = {
+                    Init: function(){
+
+                    },
+                    GetPhotoByUserID: function(){
+                            $.ajax({
+                                url: 'https://api.instagram.com/v1/users/self/media/recent',
+                                dataType: 'jsonp',
+                                type: 'GET',
+                                data: {access_token: token, count: num_photos},
+                                success: function(data){
+                                    for( x in data.data ){
+                                        $('ul').append('<li><img src="'+data.data[x].images.low_resolution.url+'"></li>');
+                                    }
+                                },
+                                error: function(data){
+                                    console.log(data);
+                                }
+                            });
+                    },
+                    GetPhotoByUsername: function(){
+                        $.ajax({ // the first ajax request returns the ID of user rudrastyh
+                                url: 'https://api.instagram.com/v1/users/search',
+                                dataType: 'jsonp',
+                                type: 'GET',
+                                data: {access_token: token, q: username}, // actually it is just the search by username
+                                success: function(data){
+                                    console.log(data);
+                                    $.ajax({
+                                        url: 'https://api.instagram.com/v1/users/' + data.data[0].id + '/media/recent', // specify the ID of the first found user
+                                        dataType: 'jsonp',
+                                        type: 'GET',
+                                        data: {access_token: token, count: num_photos},
+                                        success: function(data2){
+                                            console.log(data2);
+                                            for(x in data2.data){
+                                                $('#rudr_instafeed').append('<li><img src="'+ data2.data[x].images.standard_resolution.url+'"></li>');  
+                                            }
+                                            },
+                                        error: function(data2){
+                                            console.log(data2);
+                                        }
+                                    });
+                                },
+                                error: function(data){
+                                    console.log(data);
+                                }
+                        });
+                    },
+                    GetPhotoByTag: function(){
+                            $.ajax({
+                                url: 'https://api.instagram.com/v1/tags/' + tag + '/media/recent',
+                                dataType: 'jsonp',
+                                type: 'GET',
+                                data: {access_token: token, count: count},
+                                success: function(result){
+                                    console.log(result);
+                                    for(x in result.data){
+                                        $('ul').append('<li><img src="'+result.data[x].images.standard_resolution.url+'"></li>');  
+                                    }
+                                    // $.ajax({
+                                    //     url: result.pagination.next_url, // we don't need to specify parameters for this request - everything is in URL already
+                                    //     dataType: 'jsonp',
+                                    //     type: 'GET',
+                                    //     success: function(result2){
+                                    //         console.log(result2);
+                                    //         for(x in result2.data){
+                                    //             $('ul').append('<li><img src="'+result2.data[x].images.standard_resolution.url+'"></li>');  
+                                    //         }
+                                    //     },
+                                    //     error: function(result2){
+                                    //         console.log(result2);
+                                    //     }
+                                    // });
+                            
+                                },
+                                error: function(result){
+                                    console.log(result);
+                                }
+                            });
+                    }
+                }
+            });
+            app.init = function(){
+                angular.bootstrap(document, ["instagram-api"]);
+            }
+            return app;
+        })();
+       
+        $(function () {
+            Try.init()
+        })
+
+
+
+
+            
+      
+
+//      Còn cái này nè, anh biết bây giờ em vẫn còn nghỉ lại chuyện trước vì sợ là anh sẽ lại tiếp tục như vậy, anh hiểu, anh cũng sợ anh sẽ như vậy lại, đến bây giờ anh mà nói là anh đã thay đổi tính tình thì không ai mà tin được.
+// Nhưng Anh còn thương yêu em lắm, xung quanh em nhiều trai theo nhưng anh chắc là chỉ vui bên ngoài thôi, anh vẫn còn chút gì đó với em đúng hông, nên 14.2 này là valentine nên em đừng buồn vì em chỉ có một hình hay gì nha, rũ Ái, bạn bè đi chơi quẩy cho vu, em mà có người rủ đi anh cũng sợ nhưng không sao cả :p
+// Anh không dám xin em là hãy nói chuyện với anh, nhưng dịp này khi nào em cảm thấy muốn nói chuyện với anh thì em cho anh cơ hội nha.
+// Anh biết là anh sai trong cách yêu, công việc cũng có cái sai chứ không là giờ phải khác, cuộc sống cũng có cái sai, như em nói đó. Mà Anh chắc em là người anh muốn sống cả cuộc đời. Anh sẽ theo tới cùng, vì nếu đã yêu thì thử yêu cho hết sức mình em ah.
+// Anh không tự ái vì những gì em nói, nên em cứ nói, anh biết nghỉ nhưng đi không đúng đường. Hãy tin ở anh
+
+    </script>
+</body>
+</html>
