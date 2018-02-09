@@ -34,27 +34,22 @@
         <nav class="blue-grey darken-4 white-text">
             <div class="nav-wrapper container">
                 <a href="#" class="brand-logo brand-logo-small">Instagram API</a>
-              <ul id="slide-out" class="side-nav">
-      <li><a href="#!">First Sidebar Link</a></li>
-      <li><a href="#!">Second Sidebar Link</a></li>
-    </ul>
-    <a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
-          
+                <ul id="slide-out" class="side-nav">
+                    <li><a href="#!">First Sidebar Link</a></li>
+                    <li><a href="#!">Second Sidebar Link</a></li>
+                </ul>
+                <a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
             </div>
         </nav>
     </header>
-
     <div class="container">
-	
         <div class="section ">
             <div class="row center">
                 <div class="col s12">
-                
                 </div>
-
                 <div class="col s12">
                     <ul class="tabs">
-                      <li class="tab col s3 blue-grey "><a class="active white-text" href="#tab1">Get photo by userID</a></li>
+                      <li class="tab col s3 blue-grey "><a class="active white-text" href="#tab1">Get access token</a></li>
                       <li class="tab col s3 blue-grey  white-text"><a class="white-text" href="#tab2">Get photo by username</a></li>
                       <li class="tab col s3 blue-grey  white-text"><a class="white-text" href="#tab3">Get photo by tag</a></li>
                       <li class="tab col s3 blue-grey  white-text"><a class="white-text" href="#tab4">Test 4</a></li>
@@ -63,29 +58,28 @@
                   <div id="tab1" class="col s12"> 
                         <div class="row center">
                                 <div class="col s12">  
-								  <div class="row">
-									<div class="input-field col s6">
-									
-									  <input id="icon_prefix" ng-model="clientID" type="text" class="validate">
-									  <label for="icon_prefix">Client ID</label>
-									</div>
-									<div class="input-field col s6">
-									
-									  <input id="icon_telephone" ng-model="redirectURL" type="tel" class="validate">
-									  <label for="icon_telephone">Redirect URL</label>
-									</div>
+								    <div class="row">
+                                        <div class="input-field col s6">
+                                            <input id="icon_prefix" ng-model="clientID" type="text" class="validate"/>
+                                            <label for="icon_prefix">Client ID</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input id="icon_telephone" ng-model="redirectURL" type="tel" class="validate"/>
+                                            <label for="icon_telephone">Redirect URL</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <input disabled id="access_token" type="tel" class="validate">
+                                            <label for="icon_prefix">Access token</label>
+                                        </div>
+                                    </div>
                                 </div>
-								<div class="row">
-									<div class="input-field col s12">
-									  <input disabled id="access_token" type="tel" class="validate">
-									  <label for="icon_prefix">Access token</label>
-									</div>
+                                <div class="row center">
+                                    <button class="blue-grey darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetAccessToken()">Get</button>
                                 </div>
-                            </div>
-                    <div class="row center">
-                            <button class="blue-grey darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetAccessToken()">Get</button>
+                        </div>
                     </div>
-                </div>
                   <div id="tab2" class="col s12">
                       <div class="row center">
                         <div class="col s12 image">
@@ -117,7 +111,6 @@
     </div>
     <script src="js/InstagramAPI.js"></script>
     <script type="text/javascript">     
-     
         var Try = (function(){
             var app = angular.module("instagram-api", [])
             app.controller("myCtrl", function($scope) {
@@ -127,24 +120,24 @@
                 tag='appwatchseries3',
                 count = 30,
                 method; 
+
                 var fn_private = {
                     GetAccessToken: function(){
                         return window.location.href.split('access_token=')[1]
                     }
-
                 }
-                var api = new InstagramAPI();
-               
+
+                var api = new InstagramAPI();               
                 $scope.fn = {
 					Init: function(){
                         method = fn_private;
                         $('.button-collapse').sideNav({
-                            menuWidth: 300, // Default is 300
-                            edge: 'left', // Choose the horizontal origin
-                            closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-                            draggable: true, // Choose whether you can drag to open on touch screens,
-                            onOpen: function(el) { /* Do Stuff*/ }, // A function to be called when sideNav is opened
-                            onClose: function(el) { /* Do Stuff*/ }, // A function to be called when sideNav is closed
+                                menuWidth: 300,
+                                edge: 'left',
+                                closeOnClick: true,
+                                draggable: true,
+                                onOpen: function(el) { /* Do Stuff*/ },
+                                onClose: function(el) { /* Do Stuff*/ },
                             }
                         );
 						if(typeof method.GetAccessToken() != 'undefined')
@@ -170,13 +163,6 @@
         $(function(){
             Try.init();
         })
-
-
-
-
-
-
-
         // var Try = (function(){
         //     var app = angular.module("instagram-api", [])
         //     app.controller("myCtrl", function($scope) {
