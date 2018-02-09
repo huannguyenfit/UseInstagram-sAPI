@@ -9,34 +9,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular.min.js" type="text/javascript"></script>
     <script src="js/materialize.min.js" type="text/javascript"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js" type="text/javascript"></script>
     <style type="">
         .image ul{
             list-style:none  
         }
         .image ul{
-        float:left;
-        width:200px;
-        height:200px;
-        margin:10px
+            float:left;
+            width:200px;
+            height:200px;
+            margin:10px
         }
         .image ul li img{
-        max-width:100%;
-        max-height:100%;
+            max-width:100%;
+            max-height:100%;
         }
+		
+          
     </style>
 </head>
-<body ng-controller="myCtrl">
+<body ng-controller="myCtrl" ng-init="fn.Init()">
     <header>
         <nav class="blue-grey darken-4 white-text">
             <div class="nav-wrapper container">
                 <a href="#" class="brand-logo brand-logo-small">Instagram API</a>
-                <ul class="right hide-on-med-and-down">
-                    <li><a href="#">About us</a></li>
-                </ul>
+              <ul id="slide-out" class="side-nav">
+      <li><a href="#!">First Sidebar Link</a></li>
+      <li><a href="#!">Second Sidebar Link</a></li>
+    </ul>
+    <a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
+          
             </div>
         </nav>
     </header>
+
     <div class="container">
+	
         <div class="section ">
             <div class="row center">
                 <div class="col s12">
@@ -53,12 +62,28 @@
                   </div>
                   <div id="tab1" class="col s12"> 
                         <div class="row center">
-                                <div class="col s12 image">
-                                        <ul id="feed"></ul> 
+                                <div class="col s12">  
+								  <div class="row">
+									<div class="input-field col s6">
+									
+									  <input id="icon_prefix" ng-model="clientID" type="text" class="validate">
+									  <label for="icon_prefix">Client ID</label>
+									</div>
+									<div class="input-field col s6">
+									
+									  <input id="icon_telephone" ng-model="redirectURL" type="tel" class="validate">
+									  <label for="icon_telephone">Redirect URL</label>
+									</div>
+                                </div>
+								<div class="row">
+									<div class="input-field col s12">
+									  <input disabled id="access_token" type="tel" class="validate">
+									  <label for="icon_prefix">Access token</label>
+									</div>
                                 </div>
                             </div>
                     <div class="row center">
-                            <button class="blue-grey darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetPhotoByUserID()">Get</button>
+                            <button class="blue-grey darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetAccessToken()">Get</button>
                     </div>
                 </div>
                   <div id="tab2" class="col s12">
@@ -68,7 +93,7 @@
                         </div>
                     </div>
                     <div class="row center">
-                            <button class="blue-grey darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetPhotoByUserName()">Get</button>
+                            <button class="blue-grey darken-2 waves-effect waves-light btn-large" data-ng-click="fn.GetPhotoByUsername()">Get</button>
                     </div>
                 </div>
                     <div id="tab3" class="col s12">
@@ -90,7 +115,9 @@
             Made by <a href="http://materializecss.com">Materialize</a>. Icon pack by <a href="https://icons8.com"> Icons8</a>.
         </div>
     </div>
+    <script src="js/InstagramAPI.js"></script>
     <script type="text/javascript">     
+     
         var Try = (function(){
             var app = angular.module("instagram-api", [])
             app.controller("myCtrl", function($scope) {
@@ -98,97 +125,131 @@
                 username = 'hnguyen.fit',
                 num_photos = 10,
                 tag='appwatchseries3',
-                count = 30; 
-                $scope.fn = {
-                    Init: function() {
-                    },
-                    GetPhotoByUserID: function() {
-                            $.ajax({
-                                url: 'https://api.instagram.com/v1/users/self/media/recent',
-                                dataType: 'jsonp',
-                                type: 'GET',
-                                data: {access_token: token, count: num_photos},
-                                success: function(data){
-                                    for( x in data.data ){
-                                        $('#feed').append('<li><img src="' + data.data[x].images.low_resolution.url +'"></li>');
-                                    }
-                                },
-                                error: function(data){
-                                    console.log(data);
-                                }
-                            });
-                    },
-                    GetPhotoByUserName: function(){
-                        $.ajax({ 
-                                url: 'https://api.instagram.com/v1/users/search',
-                                dataType: 'jsonp',
-                                type: 'GET',
-                                data: {access_token: token, q: username},                                
-                                success: function(data){
-                                    console.log(data.data[0].id);
-                                    //return userID
-                                    $.ajax({
-                                        url: 'https://api.instagram.com/v1/users/' + data.data[0].id + '/media/recent', // specify the ID of the first found user
-                                        dataType: 'jsonp',
-                                        type: 'GET',
-                                        data: {access_token: token, count: num_photos},
-                                        success: function(data2){
-                                            console.log(data2);
-                                            for(x in data2.data){
-                                                $('#feed1').append('<li><img src="'+ data2.data[x].images.standard_resolution.url+'"></li>');  
-                                            }
-                                            },
-                                        error: function(data2){
-                                            console.log(data2);
-                                        }
-                                    });
-                                },
-                                error: function(data){
-                                    console.log(data);
-                                }
-                        });
-                    },
-                    GetPhotoByTag: function(){
-                            $.ajax({
-                                url: 'https://api.instagram.com/v1/tags/' + tag + '/media/recent',
-                                dataType: 'jsonp',
-                                type: 'GET',
-                                data: {access_token: token},
-                                success: function(result){
-                                    console.log(result);
-                                    for(x in result.data){
-                                        $('#feed1').append('<li><img src="'+result.data[x].images.standard_resolution.url+'"></li>');  
-                                    }
-                                    // $.ajax({
-                                    //     url: result.pagination.next_url, // we don't need to specify parameters for this request - everything is in URL already
-                                    //     dataType: 'jsonp',
-                                    //     type: 'GET',
-                                    //     success: function(result2){
-                                    //         console.log(result2);
-                                    //         for(x in result2.data){
-                                    //             $('ul').append('<li><img src="'+result2.data[x].images.standard_resolution.url+'"></li>');  
-                                    //         }
-                                    //     },
-                                    //     error: function(result2){
-                                    //         console.log(result2);
-                                    //     }
-                                    // });
-                                },
-                                error: function(result){
-                                    console.log(result);
-                                }
-                            });
+                count = 30,
+                method; 
+                var fn_private = {
+                    GetAccessToken: function(){
+                        return window.location.href.split('access_token=')[1]
                     }
+
+                }
+                var api = new InstagramAPI();
+               
+                $scope.fn = {
+					Init: function(){
+                        method = fn_private;
+                        $('.button-collapse').sideNav({
+                            menuWidth: 300, // Default is 300
+                            edge: 'left', // Choose the horizontal origin
+                            closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+                            draggable: true, // Choose whether you can drag to open on touch screens,
+                            onOpen: function(el) { /* Do Stuff*/ }, // A function to be called when sideNav is opened
+                            onClose: function(el) { /* Do Stuff*/ }, // A function to be called when sideNav is closed
+                            }
+                        );
+						if(typeof method.GetAccessToken() != 'undefined')
+							$('#access_token').val(method.GetAccessToken())
+					},
+                    GetAccessToken: function(){
+                        api.GetAccessToken($scope.clientID, $scope.redirectURL)
+                    },
+                    GetPhotoByUsername: function(){
+                        api.GetInformationByUsername(token, username, function(data) {
+                            for(x in data){
+                            $('#feed1').append('<li><img src="'+ data[x].images.standard_resolution.url+'"></li>');
+                            }
+                        })
+                   }
                 }
             });
             app.init = function(){
-                angular.bootstrap(document, ["instagram-api"]);
+                angular.bootstrap(document, ["instagram-api"])
             }
             return app;
         })();
-        $(function () {
-            Try.init()
+        $(function(){
+            Try.init();
         })
+
+
+
+
+
+
+
+        // var Try = (function(){
+        //     var app = angular.module("instagram-api", [])
+        //     app.controller("myCtrl", function($scope) {
+        //         var token = '4669573945.ea6645a.d3939e76b27145a2a28ba672a3a9b7ac',
+        //         username = 'hnguyen.fit',
+        //         num_photos = 10,
+        //         tag='appwatchseries3',
+        //         count = 30; 
+        //         $scope.fn = {
+        //             Init: function() {
+        //             },
+        //             GetPhotoByUserID: function() {
+        //                     $.ajax({
+        //                         url: 'https://api.instagram.com/v1/users/self/media/recent',
+        //                         dataType: 'jsonp',
+        //                         type: 'GET',
+        //                         data: {access_token: token, count: num_photos},
+        //                         success: function(data){
+        //                             for( x in data.data ){
+        //                                 $('#feed').append('<li><img src="' + data.data[x].images.low_resolution.url +'"></li>');
+        //                             }
+        //                         },
+        //                         error: function(data){
+        //                             console.log(data);
+        //                         }
+        //                     });
+        //             },
+        //             GetPhotoByUserName: function(){
+                      
+        //             },
+        //             GetPhotoByTag: function(){
+        //                     $.ajax({
+        //                         url: 'https://api.instagram.com/v1/tags/search',
+        //                         //url: 'https://api.instagram.com/v1/tags/' + tag,
+        //                         dataType: 'jsonp',
+        //                         type: 'GET',
+        //                         data: {q: tag, access_token: token},
+        //                         success: function(result){
+        //                             console.log(result);
+        //                             for(x in result.data){
+        //                                 $('#feed1').append('<li><img src="'+result.data[x].images.standard_resolution.url+'"></li>');  
+        //                             }
+                                   
+        //                             // $.ajax({
+        //                             //     url: result.pagination.next_url, // we don't need to specify parameters for this request - everything is in URL already
+        //                             //     dataType: 'jsonp',
+        //                             //     type: 'GET',
+        //                             //     success: function(result2){
+        //                             //         console.log(result2);
+        //                             //         for(x in result2.data){
+        //                             //             $('ul').append('<li><img src="'+result2.data[x].images.standard_resolution.url+'"></li>');  
+        //                             //         }
+        //                             //     },
+        //                             //     error: function(result2){
+        //                             //         console.log(result2);
+        //                             //     }
+        //                             // });
+        //                         },
+        //                         error: function(result){
+        //                             console.log(result);
+        //                         }
+        //                     });
+        //             }
+        //         }
+        //     });
+        //     app.init = function(){
+        //         angular.bootstrap(document, ["instagram-api"]);
+        //     }
+        //     return app;
+        // })();
+        // $(function () {
+        //     Try.init()
+        // })
     </script>
 </body>
 </html>
