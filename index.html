@@ -70,7 +70,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12">
-                                            <input disabled id="access_token" type="tel" class="validate">
+                                            <input disabled id="access_token" ng-model="accessToken" type="tel" class="validate">
                                             <label for="icon_prefix">Access token</label>
                                         </div>
                                     </div>
@@ -141,7 +141,7 @@
                             }
                         );
 						if(typeof method.GetAccessToken() != 'undefined')
-							$('#access_token').val(method.GetAccessToken())
+                        $scope.accessToken = method.GetAccessToken()
 					},
                     GetAccessToken: function(){
                         api.GetAccessToken($scope.clientID, $scope.redirectURL)

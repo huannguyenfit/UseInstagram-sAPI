@@ -3,12 +3,13 @@ import * as $ from 'jquery'
 export class InstagramAPI {
     constructor() {
 
-    }
+    }    
+    
     public GetAccessToken(client_id: string, redirect_uri:string): string {
         window.location.href = 'http://api.instagram.com/oauth/authorize?client_id=' + client_id + '&redirect_uri=' + redirect_uri + '&response_type=token'
     }
-    public GetInformationByUsername(access_token:string, username:string, callback: (x: Array<any>) => void): Array<any> {
-      
+
+    public GetInformationByUsername(access_token:string, username:string, callback: (x: Array<any>) => void): Array<any> {      
         $.ajax({ 
             url: 'https://api.instagram.com/v1/users/search',
             dataType: 'jsonp',
