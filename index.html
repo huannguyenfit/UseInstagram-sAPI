@@ -111,7 +111,7 @@
     </div>
     <script src="js/InstagramAPI.js"></script>
     <script type="text/javascript">     
-        var Try = (function(){
+        var Try = (function(){	    
             var app = angular.module("instagram-api", [])
             app.controller("myCtrl", function($scope) {
                 var token = '4669573945.ea6645a.d3939e76b27145a2a28ba672a3a9b7ac',
@@ -126,27 +126,27 @@
                         return window.location.href.split('access_token=')[1]
                     }
                 }
-
-                var api = new InstagramAPI();               
+		var api = new InstagramAPI(); 
+                             
                 $scope.fn = {
-					Init: function(){
-                        method = fn_private;
-                        $('.button-collapse').sideNav({
-                                menuWidth: 300,
-                                edge: 'left',
-                                closeOnClick: true,
-                                draggable: true,
-                                onOpen: function(el) { /* Do Stuff*/ },
-                                onClose: function(el) { /* Do Stuff*/ },
-                            }
-                        );
-						if(typeof method.GetAccessToken() != 'undefined')
-                        $scope.accessToken = method.GetAccessToken()
-					},
-                    GetAccessToken: function(){
+		    Init: function() {
+				method = fn_private;
+				$('.button-collapse').sideNav({
+					menuWidth: 300,
+					edge: 'left',
+					closeOnClick: true,
+					draggable: true,
+					onOpen: function(el) { /* Do Stuff*/ },
+					onClose: function(el) { /* Do Stuff*/ },
+				    }
+				);
+				if(typeof method.GetAccessToken() != 'undefined')
+				$scope.accessToken = method.GetAccessToken()
+		    },
+                    GetAccessToken: function() {
                         api.GetAccessToken($scope.clientID, $scope.redirectURL)
                     },
-                    GetPhotoByUsername: function(){
+                    GetPhotoByUsername: function() {
                         api.GetInformationByUsername(token, username, function(data) {
                             for(x in data){
                             $('#feed1').append('<li><img src="'+ data[x].images.standard_resolution.url+'"></li>');
